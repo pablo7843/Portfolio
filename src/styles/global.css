@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+:root {
+  --primary-color: #00ff00;
+  --bg-dark: #0a0e27;
+  --bg-dark-light: #111735;
+  --bg-header: #1a1f3a;
+  --text-primary: #00ff00;
+  --text-secondary: #00cc00;
+}
+
+html.light-mode {
+  --primary-color: #0066cc;
+  --bg-dark: #f5f5f5;
+  --bg-header: #e0e0e0;
+  --text-primary: #0066cc;
+  --text-secondary: #0052a3;
+  --bg-light-card: #e8e8e8;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  transition: color 0.3s ease, background-color 0.3s ease;
+}

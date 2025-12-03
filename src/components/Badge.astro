@@ -1,0 +1,33 @@
+<span class="custom-badge"><slot/></span>
+
+<style>
+.custom-badge {
+  display: inline-flex;
+  align-items: center; /* centra verticalmente */
+  justify-content: center;
+  padding: 0.35rem 0.75rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: 1px solid #00cc00;
+  background-color: #00ff33;
+  color: #0a0e27;
+  line-height: 1; /* importante para alinear con texto grande */
+  vertical-align: middle; /* asegura alineación inline con el texto */
+  box-shadow: 0 0 6px rgba(0, 255, 51, 0.5);
+  transition: all 0.3s ease;
+}
+
+.custom-badge:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Modo claro */
+html.light-mode .custom-badge {
+  background-color: #cce5ff;
+  color: #0066cc;
+  border: 1px solid #0066cc;
+  box-shadow: 0 0 6px rgba(0, 102, 204, 0.4);
+}
+</style>

@@ -1,0 +1,165 @@
+---
+const menuItems = [
+    { label: 'About me', href: '#about' },
+    { label: 'Tecnologies', href: '#tecnologies' },
+    { label: 'Projects', href: '#projects' },
+    { label: 'Contact', href: '#contact' },
+];
+
+---
+
+<header>
+    <div class="header-container">
+        <div class="logo">
+            <a href="/">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2"/>
+                    <text x="20" y="26" text-anchor="middle" font-size="16" font-weight="bold" fill="currentColor">PC</text>
+                </svg>
+            </a>
+            <button id="darkModeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+                <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <nav class="menu">
+            <ul>
+                {menuItems.map((item) => (
+                    <li><a href={item.href}>{item.label}</a></li>
+                ))}
+
+            </ul>
+        </nav>
+
+        
+    </div>
+</header>
+
+<style>
+    header {
+        background-color: #fff;
+        border-bottom: 1px solid #e5e5e5;
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo a {
+        display: flex;
+        align-items: center;
+        color: #000;
+        text-decoration: none;
+    }
+
+    .menu ul {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+        margin: 0;
+        padding: 0;
+    }
+
+    .menu a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+
+    .menu a:hover {
+        color: #0066cc;
+    }
+
+    .theme-toggle {
+        position: fixed;
+        top: 11px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid var(--primary-color);
+        background-color: var(--bg-header);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+        transform: scale(1.1);
+    }
+
+    .theme-toggle svg {
+        width: 24px;
+        height: 24px;
+        color: var(--primary-color);
+        position: absolute;
+        transition: all 0.5s ease;
+    }
+
+    .sun-icon {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+    }
+
+    .moon-icon {
+        opacity: 0;
+        transform: rotate(-180deg) scale(0);
+    }
+
+    html.light-mode .sun-icon {
+        opacity: 0;
+        transform: rotate(180deg) scale(0);
+    }
+
+    html.light-mode .moon-icon {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+    }
+
+
+</style>
+
+<script>
+    const toggleButton = document.getElementById('darkModeToggle');
+    const htmlElement = document.documentElement;
+
+    const savedMode = localStorage.getItem('theme-mode');
+    if (savedMode === 'light') {
+        htmlElement.classList.add('light-mode');
+    }
+
+    if (toggleButton) {
+        toggleButton.addEventListener('click', () => {
+            htmlElement.classList.toggle('light-mode');
+            const isLightMode = htmlElement.classList.contains('light-mode');
+            localStorage.setItem('theme-mode', isLightMode ? 'light' : 'dark');
+        });
+    }
+</script>
