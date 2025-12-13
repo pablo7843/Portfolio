@@ -5,8 +5,7 @@ import Tecnologias from '../components/Tecnologias.astro';
 import Layout from '../layouts/Layout.astro';
 import Trabajos from '../components/Trabajos.astro';
 import Socials from '../components/Socials.astro';
-import AOS from "aos";
-import "aos/dist/aos.css";
+import InteractiveShell from '../components/InteractiveShell.astro';
 ---
 
 <Layout title="Portfolio PC">
@@ -30,17 +29,21 @@ import "aos/dist/aos.css";
 
           <h2 class="subtitle">
             <span class="typing-subtitle">
-              Currently studying Cybersecurity. Specialized in Web Development.
+              Currently studying Cybersecurity. Specialized in Web and Movile Development.
             </span>
           </h2>
         </div>
 
-        <div class="photo-container" data-aos="fade-left" data-aos-delay="400">
+        <div class="photo-container" data-aos="fade-down" data-aos-delay="400">
           <img src="./src/assets/foto.png" alt="Pablo" class="photo"/>
         </div>
       </div>
     </div>
   </main>
+
+  <section data-aos="fade-up" data-aos-duration="1300">
+    <InteractiveShell />
+  </section>
 
   <section data-aos="fade-up" data-aos-duration="1300">
     <Socials />
@@ -53,6 +56,7 @@ import "aos/dist/aos.css";
   <section data-aos="fade-up" data-aos-duration="1300">
     <Trabajos />
   </section>
+
 </Layout>
 
 <style>

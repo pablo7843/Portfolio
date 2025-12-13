@@ -1,0 +1,65 @@
+---
+// src/components/Badge.astro
+// Componente para mostrar una tecnología con un texto secundario opcional.
+const { tech } = Astro.props;
+---
+<div class="badge-wrapper">
+    <span class="tech-name">{tech}</span>
+    
+    <span class="tech-description">
+        <slot />
+    </span>
+</div>
+
+<style>
+    /* VARIABLES (Asegúrate de que coincidan con tu archivo principal) */
+    :root {
+        --primary-color: #00ff00; /* Verde neón */
+        --secondary-color: #66ccff; /* Azul neón */
+        --bg-dark-badge: #1a1a30; /* Fondo oscuro específico para el badge */
+    }
+
+    .badge-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        /* Contorno exterior doble */
+        border: 1px solid var(--secondary-color);
+        box-shadow: 0 0 5px rgba(102, 204, 255, 0.5); /* Resplandor azul */
+        
+        background-color: var(--bg-dark-badge);
+        padding: 8px 12px;
+        border-radius: 4px;
+        
+        transition: all 0.2s ease-in-out;
+        cursor: default;
+        user-select: none;
+    }
+
+    .badge-wrapper:hover {
+        border-color: var(--primary-color); /* Borde verde al pasar el ratón */
+        box-shadow: 0 0 8px rgba(0, 255, 0, 0.8); /* Resplandor verde más intenso */
+        transform: scale(1.05);
+        z-index: 10;
+    }
+
+    .tech-name {
+        /* El nombre principal de la tecnología */
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: var(--primary-color); /* Verde neón */
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .tech-description {
+        /* El texto secundario o el eslogan de seguridad */
+        font-size: 0.8rem;
+        color: var(--secondary-color); /* Azul neón */
+        margin-top: 3px;
+        opacity: 0.8;
+        text-align: center;
+        line-height: 1.2;
+    }
+</style>

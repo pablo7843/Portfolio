@@ -1,68 +1,98 @@
 ---
 const trabajos = [
     {
-        title: 'Dragon Ball API',
-        description: 'Dragon Ball API application',
-        image: './src/assets/dragon ball.webp',
-        technologies: ['HTML5', 'CSS3', 'JavaScript']
+        title: 'Star WikiWars',
+        description: 'Star Wars Wiki for fans',
+        image: './src/assets/star-wars.webp',
+        technologies: ['Kotlin'],
+        details: 'Aplicación nativa de Android que utiliza la arquitectura MVVM. Desarrollada en Kotlin, consume la API pública de Star Wars (SWAPI) para mostrar datos de personajes y naves, con una alta optimización para la experiencia móvil.'
     },
     {
-        title: 'Bank App',
-        description: 'Sistema de gestión bancaria',
+        title: 'Qr-Shield',
+        description: 'Secure QR code scanner',
         image: './src/assets/banco.webp',
-        technologies: ['Kotlin']
+        technologies: ['Flutter', 'Supabase'],
+        details: 'Escaner de QR seguro para prevenir phishing. Escanea códigos QR y verifica URLs para decidir si el código QR es seguro, sospechoso o peligroso. El usuario puede iniciar sesión para activar el historial de escaneos y gestionarlos.'
     },
     {
         title: 'Music web reproducer',
         description: 'Reproducer online',
         image: './src/assets/harmoniq.png',
-        technologies: ['Spring', 'HTML5', 'CSS3', 'JavaScript', 'Kotlin', 'MySQL']
+        technologies: ['React', 'Supabase'],
+        details: 'Plataforma de streaming de música construida con React para el frontend y Supabase (backend como servicio) para la autenticación y almacenamiento. Focalizada en la gestión de sesiones seguras y reproducción optimizada.'
     }
 ];
 
 const getTechIcon = (tech: string) => {
     const name = tech.toLowerCase().replace(/\s+/g, '');
-    return `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${name}/${name}-original.svg`;
+    const iconName = name === 'kotlin' ? 'kotlin' : name; 
+    return `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${iconName}/${iconName}-original.svg`;
 };
 
 const getTechColor = (tech: string) => {
     const colors: Record<string, string> = {
-        'html5': '#E34C26',
-        'css3': '#563D7C',
-        'javascript': '#F7DF1E',
+        'react': '#2784F5',
         'kotlin': '#7F52FF',
-        'spring': '#6DB33F',
-        'mysql': '#00758F'
+        'supabase': '#3ECF8E',
+        'flutter': '#02569B'
     };
     return colors[tech.toLowerCase().replace(/\s+/g, '')] || '#cccccc';
 };
 ---
-<p class="titulo-trabajos"><h2>Trabajos</h2></p>
-<div class="trabajos-container">
-    {trabajos.map(trabajo => (
-        <div class="trabajo-card">
-            <img id="imagen-trabajo" src={trabajo.image} alt={trabajo.title} style="height: 200px; width: 100%; object-fit: cover; object-position: bottom;" />
-            <h3>{trabajo.title}</h3>
-            <p class="descripcion">{trabajo.description}</p>
-            <div class="tecnologias">
-                {trabajo.technologies.map(tech => (
-                    <span class="tech-badge" style={`background-color: ${getTechColor(tech)}`}>
-                        <img src={getTechIcon(tech)} alt={tech} class="tech-icon" />
-                        <span class="tech-name">{tech}</span>
-                    </span>
-                ))}
+<div class="trabajos-wrapper-outer">
+    <p class="titulo-trabajos"><h2>Projects</h2></p>
+    <div class="trabajos-container">
+        {trabajos.map(trabajo => (
+            <div class="trabajo-card">
+                <img id="imagen-trabajo" src={trabajo.image} alt={trabajo.title} style="height: 200px; width: 100%; object-fit: cover; object-position: bottom;" />
+                <h3>{trabajo.title}</h3>
+                <p class="descripcion">{trabajo.description}</p>
+                <div class="tecnologias">
+                    {trabajo.technologies.map(tech => (
+                        <span class="tech-badge" style={`background-color: ${getTechColor(tech)}`}>
+                            <img src={getTechIcon(tech)} alt={tech} class="tech-icon" />
+                            <span class="tech-name">{tech}</span>
+                        </span>
+                    ))}
+                </div>
+                
+                <details class="project-details">
+                    <summary class="saber-mas-btn">Saber más</summary>
+                    <div class="details-content">
+                        <p>{trabajo.details}</p>
+                        <div class="action-links">
+                            <a href="#" target="_blank">Ver Código 💻</a>
+                            <a href="#" target="_blank">Ver Demo 🚀</a>
+                        </div>
+                    </div>
+                </details>
             </div>
-            <!-- Botón Saber más -->
-            <button class="saber-mas-btn">Saber más</button>
-        </div>
-    ))}
+        ))}
+    </div>
 </div>
 
 <style>
+    /* VARIABLES (Asegúrate de que tus variables CSS están definidas globalmente) */
+    :root {
+        --primary-color: #00ff00; 
+        --secondary-color: #66ccff;
+        --bg-dark-light: #161625; 
+        --text-primary: #fff; 
+        --text-secondary: #cccccc;
+    }
 
+    /* Estilos del desplegable */
+    .project-details {
+        margin: 1rem 1rem 1rem 1rem;
+        border-top: 1px solid rgba(102, 204, 255, 0.2);
+        padding-top: 1rem;
+    }
+    
     .saber-mas-btn {
+        list-style: none;
         display: block;
-        margin: 1rem auto 1rem auto;
+        /* Estilos de botón existentes */
+        margin: 0 auto; 
         padding: 0.5rem 1rem;
         border: 2px solid var(--primary-color);
         border-radius: 6px;
@@ -73,6 +103,52 @@ const getTechColor = (tech: string) => {
         cursor: pointer;
         transition: all 0.3s ease;
         text-align: center;
+        width: 30%; 
+    }
+    
+    .saber-mas-btn::-webkit-details-marker {
+        display: none;
+    }
+
+    .details-content {
+        margin-top: 1rem;
+        padding: 1rem;
+        border: 1px dashed var(--secondary-color);
+        border-radius: 4px;
+        background-color: rgba(10, 10, 30, 0.5);
+    }
+    
+    .details-content p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.4;
+        margin-bottom: 1rem;
+    }
+
+    .action-links {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+
+    .action-links a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.2s;
+    }
+
+    .action-links a:hover {
+        color: var(--secondary-color);
+        text-decoration: underline;
+    }
+    
+    /* Fin de estilos del desplegable */
+
+    .trabajos-wrapper-outer {
+        max-width: 1800px;
+        margin: 40px auto;
+        padding: 0 20px;
     }
 
     .saber-mas-btn:hover {
@@ -94,14 +170,14 @@ const getTechColor = (tech: string) => {
         font-size: 2.5rem;
         margin-bottom: 2rem;
         text-align: center;
-        color: var(--text-primary);
+        color: var(--primary-color); 
+        text-transform: uppercase;
     }
 
     .trabajos-container {
         display: grid;
         grid-template-columns: repeat(3, 1fr); 
         gap: 2rem;
-        padding: 2rem;
     }
 
     @media (max-width: 1024px) {
@@ -120,22 +196,21 @@ const getTechColor = (tech: string) => {
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, background-color 0.3s ease;
-        background-color: var(--bg-dark);
-    }
-
-    html:not(.light-mode) .trabajo-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
         background-color: var(--bg-dark-light);
+        border: 1px solid rgba(102, 204, 255, 0.1); 
     }
 
     .trabajo-card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0, 255, 0, 0.3); 
     }
 
     .trabajo-card img {
         width: 100%;
-        height: 30px;
+        height: 50px; 
         object-fit: cover;
+        object-position: bottom;
     }
 
     .trabajo-card h3 {
@@ -148,7 +223,7 @@ const getTechColor = (tech: string) => {
     .descripcion {
         padding: 0 1rem;
         color: var(--text-secondary);
-        margin: 0.5rem 0;
+        margin: 0.5rem 0 1rem 0;
     }
 
     .tecnologias {
@@ -159,7 +234,6 @@ const getTechColor = (tech: string) => {
     }
 
     .tech-badge {
-        color: white;
         padding: 0.4rem 0.8rem;
         border-radius: 20px;
         font-size: 0.85rem;
@@ -185,10 +259,6 @@ const getTechColor = (tech: string) => {
 
     html.light-mode .tech-name {
         color: #333; 
-    }
-
-    html:not(.light-mode) .tech-name {
-        color: #fff;
     }
 
     html.light-mode .trabajo-card {

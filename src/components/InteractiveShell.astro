@@ -1,0 +1,340 @@
+---
+// src/components/InteractiveShell.astro
+// Componente de Terminal Interactiva
+---
+<div id="terminal-wrapper">
+    <h2>💻 Terminal -- (Type 'help' to begin)</h2>
+    <div id="output-area">
+        <p class="prompt-line">
+            <span class="prompt-user" id="prompt-user-line">guest@pablo-sec:~$</span> 
+            <span id="initial-message">Welcome to Pablo's Portfolio System.</span>
+        </p>
+    </div>
+
+    <div class="input-line">
+        <span class="prompt-user" id="current-prompt-display">guest@pablo-sec:~$</span> 
+        <input type="text" id="command-input" autofocus autocomplete="off" />
+    </div>
+</div>
+
+<style>
+    #terminal-wrapper {
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        background-color: #0c0c1a;
+        color: #00ff00;
+        border: 2px solid #00ff00;
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        padding: 20px;
+        margin: 40px auto;
+        width: 90%;
+        max-width: 800px;
+        height: 400px;
+        overflow-y: auto;
+        /* 🔥 CAMBIO CLAVE 1: Permitir la selección de texto en todo el terminal */
+        user-select: text; 
+        cursor: text;
+    }
+    h2 {
+        /* Deshabilitamos la selección del título */
+        user-select: none;
+    }
+    .prompt-user {
+        color: #66ccff; 
+        user-select: none; /* Deshabilitamos la selección del prefijo (opcional) */
+    }
+    #prompt-user-line{
+        color: #66ccff;
+        user-select: none;
+    }
+    .input-line {
+        display: flex;
+        gap: 5px;
+        margin-top: 10px;
+    }
+    #command-input {
+        flex-grow: 1;
+        background: none;
+        border: none;
+        color: #00ff00; 
+        outline: none;
+        caret-color: #00ff00;
+        font-family: inherit;
+        font-size: inherit;
+        /* Deshabilitamos user-select aquí para no interferir con el input */
+        user-select: text; 
+    }
+    #output-area p {
+        margin: 0;
+        white-space: pre-wrap;
+    }
+    #initial-message {
+        color: #cccccc;
+    }
+</style>
+
+<script>
+// @ts-nocheck 
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const input = document.getElementById('command-input');
+        const output = document.getElementById('output-area');
+        const terminalWrapper = document.getElementById('terminal-wrapper');
+        const currentPromptDisplay = document.getElementById('current-prompt-display'); 
+
+        if (!input || !output || !terminalWrapper || !currentPromptDisplay) return;
+
+        /** @type {string[]} */
+        let history = [];
+        let historyIndex = -1;
+
+        const fileSystem = {
+            "~": {
+                "README.txt": "Hello! I'm Pablo, a Cybersecurity Dev. In this portfolio, I’m giving you a small overview of my knowledge as a web developer, mobile developer, and cybersecurity technician! See you soon!",
+                "projects": {
+                    "QR-Shield.txt": "A secure QR code scanner app to prevent phishing. It scans QR codes and checks URLs to decide if the QR code is safe, suspicious or dangerous. User can Sign in to activate the history of scans and manage them.",
+                    "HarmoniQ.txt": "Online music player. The user will be able to create playlists, listen music and follow the song with the lyrics of the chosed song.",
+                    "Star-WikiWars.txt": "Star Wars wiki on mobile. You will see the especifications of your favourite characters in the movies saga with the possibilities to add your favourite characters to a local Database!",
+                },
+                "contact": {
+                    "email.txt": "pablosanfelix8@gmail.com",
+                    "linkedin.txt": "https://www.linkedin.com/in/pablo-climent-sanfélix-1b5a77385/"
+                }
+            },
+            currentDir: "~"
+        };
+        
+        // Lista de comandos disponibles para autocompletar
+        const availableCommands = ['help', 'ls', 'cd', 'cat', 'clear', 'scroll'];
+
+        /**
+         * Obtiene el contenido del directorio actual.
+         * @returns {Object} El objeto que representa el directorio actual.
+         */
+        const getCurrentDirectoryContent = () => {
+            return fileSystem.currentDir === "~"
+                ? fileSystem["~"]
+                : fileSystem["~"][fileSystem.currentDir];
+        };
+
+        /**
+         * Lógica principal para obtener las coincidencias de autocompletado.
+         * @param {string} inputBuffer Lo que el usuario ha escrito actualmente.
+         * @returns {{ completion: string, matches: string[] }}
+         */
+        const getCompletions = (inputBuffer) => {
+            const parts = inputBuffer.trim().split(/\s+/);
+            let currentWord = parts.length > 1 ? parts.at(-1) : parts[0];
+            const command = parts[0];
+
+            // Caso 1: Autocompletar el comando (si está en la primera palabra)
+            if (parts.length <= 1) {
+                const matches = availableCommands.filter(cmd => cmd.startsWith(currentWord));
+                if (matches.length === 1) {
+                    return { completion: matches[0], matches: [matches[0]] };
+                }
+                return { completion: currentWord, matches: matches };
+            }
+
+            // Caso 2: Autocompletar argumentos (archivos/directorios) para 'cd' y 'cat'
+            if (command === 'cd' || command === 'cat') {
+                const currentContent = getCurrentDirectoryContent();
+                if (!currentContent) return { completion: currentWord, matches: [] };
+                
+                // Los directorios solo son válidos para 'cd'
+                const validTargets = Object.keys(currentContent).filter(name => {
+                    const isDirectory = typeof currentContent[name] === 'object';
+                    return command === 'cd' ? isDirectory : true; 
+                });
+
+                const matches = validTargets.filter(target => target.startsWith(currentWord));
+
+                if (matches.length === 1) {
+                    // Añadir espacio si es un comando completo, o barra si es un directorio.
+                    let completion = matches[0];
+                    if (command === 'cd' && typeof currentContent[completion] === 'object') {
+                        // Si el match único es un directorio y estamos haciendo cd, no añadimos espacio.
+                    } else if (command === 'cat') {
+                        // Si es cat y es un archivo, añadimos espacio
+                        completion += ' '; 
+                    }
+
+                    const completedBuffer = inputBuffer.substring(0, inputBuffer.lastIndexOf(currentWord)) + completion;
+                    return { completion: completedBuffer, matches: [matches[0]] };
+                }
+
+                // Si hay múltiples coincidencias, mostramos la lista
+                return { completion: currentWord, matches: matches };
+            }
+            
+            // Si no es un comando que soporte autocompletado de argumentos
+            return { completion: currentWord, matches: [] };
+        };
+
+        const updateInputPrompt = () => {
+            const path = fileSystem.currentDir === "~" ? "~" : fileSystem.currentDir;
+            currentPromptDisplay.textContent = `guest@pablo-sec:${path}$`;
+        };
+
+        const executeCommand = (command) => {
+            const parts = command.trim().split(/\s+/);
+            const cmd = parts[0];
+            const args = parts.slice(1);
+
+            switch (cmd) {
+                case 'help':
+                    return `Available commands: 
+                        - help
+                        - ls
+                        - cd
+                        - cat
+                        - clear`;
+
+                case 'ls': {
+                    const currentObj = getCurrentDirectoryContent();
+                    if (typeof currentObj === "object") {
+                        return Object.keys(currentObj).join("    ");
+                    }
+                    return "Error: Cannot list contents of a file.";
+                }
+
+                case 'cd': {
+                    const target = args[0];
+
+                    if (target === ".." || !target || target === "~") {
+                        fileSystem.currentDir = "~";
+                        updateInputPrompt(); 
+                        return "Changed directory to ~";
+                    }
+
+                    const obj = fileSystem["~"][target];
+                    if (obj && typeof obj === "object") {
+                        fileSystem.currentDir = target;
+                        updateInputPrompt(); 
+                        return `Changed directory to ${target}`;
+                    }
+
+                    return `Error: cd: ${target}: No such directory.`;
+                }
+
+                case 'cat': {
+                    const fileName = args[0];
+                    if (!fileName) return "Error: cat requires a file name.";
+
+                    const currentObj = getCurrentDirectoryContent();
+
+                    if (currentObj && typeof currentObj === "object" && fileName in currentObj) {
+                        const content = currentObj[fileName];
+
+                        if (fileName.endsWith(".link")) {
+                            return `Opening link: ${content}`;
+                        }
+                        return content;
+                    }
+                    return `Error: cat: ${fileName}: No such file.`;
+                }
+
+                case 'clear':
+                    output.innerHTML = "";
+                    return "Terminal cleared.";
+
+
+                default:
+                    return `Error: Command not found: ${cmd}`;
+            }
+        };
+
+        const appendOutput = (command, result) => {
+            const line = document.createElement("p");
+            line.className = "prompt-line";
+
+            const path = fileSystem.currentDir === "~" ? "~" : fileSystem.currentDir;
+            
+            line.innerHTML =
+                `<span class="prompt-user">guest@pablo-sec:${path}$</span> ${command}`; 
+
+            output.appendChild(line);
+
+            const res = document.createElement("p");
+            res.textContent = result; 
+            res.style.marginLeft = "10px";
+
+            output.appendChild(res);
+
+            output.scrollTop = output.scrollHeight;
+        };
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+
+                const command = input.value.trim();
+                if (command.length === 0) {
+                    appendOutput('', ''); 
+                    input.value = "";
+                    return;
+                }
+
+                history.unshift(command);
+                historyIndex = -1;
+
+                const result = executeCommand(command);
+                appendOutput(command, result);
+
+                input.value = "";
+            }
+            
+            // IMPLEMENTACIÓN DE AUTOCOMPLETADO CON TAB
+            if (e.key === "Tab") {
+                e.preventDefault();
+                const currentInput = input.value;
+                const { completion, matches } = getCompletions(currentInput);
+
+                if (matches.length === 1) {
+                    // Hay una única coincidencia, autocompletamos el comando
+                    input.value = completion;
+                } else if (matches.length > 1) {
+                    // Hay múltiples coincidencias, mostramos las opciones en el output
+                    appendOutput(currentInput, matches.join("    "));
+                }
+            }
+
+            if (e.key === "ArrowUp") {
+                e.preventDefault();
+                if (historyIndex < history.length - 1) {
+                    historyIndex++;
+                    input.value = history[historyIndex];
+                }
+            }
+
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    input.value = history[historyIndex];
+                } else {
+                    historyIndex = -1;
+                    input.value = "";
+                }
+            }
+        });
+
+        // 🔥 CAMBIO CLAVE 2: Modificar el event listener del clic.
+        // Solo enfocamos el input si el usuario no ha iniciado una selección.
+        terminalWrapper.addEventListener("click", (e) => {
+             // Comprueba si el usuario ha seleccionado texto (propiedad global)
+            const selection = window.getSelection();
+
+            // Si no hay texto seleccionado O si el texto seleccionado está vacío (es decir,
+            // el usuario solo ha hecho clic sin arrastrar), entonces enfocamos el input.
+            if (!selection || selection.toString().length === 0) {
+                 input.focus();
+            }
+            // Si hay texto seleccionado (length > 0), el navegador permite la selección, 
+            // y no robamos el foco al input.
+        });
+        
+        // Enfocar el input al cargar la página.
+        input.focus();
+    });
+</script>

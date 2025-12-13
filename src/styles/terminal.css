@@ -1,0 +1,87 @@
+/* terminal.css */
+
+/* Define la fuente monospace para el efecto terminal */
+.terminal-font {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    color: #00ff00; /* Verde brillante */
+    background-color: #0d1a26; /* Fondo oscuro, casi negro */
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    border: 2px solid #00ff00; /* Borde verde */
+    box-shadow: 0 0 10px #00ff00;
+}
+
+/* Estilo para el contenedor principal de la terminal */
+.terminal-container {
+    width: 90%;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+/* Estilo para las líneas de comando */
+.prompt-line {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+/* Estilo para el prompt (usuario@sitio:~) */
+.prompt-user {
+    color: #66ccff; /* Azul para el usuario */
+}
+
+/* Estilo para la ruta/directorio */
+.prompt-dir {
+    color: #ffff66; /* Amarillo suave para la ruta */
+}
+
+/* Cursor parpadeante */
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+.cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1.2em;
+    background-color: #00ff00;
+    margin-left: 5px;
+    animation: blink 1s step-end infinite;
+}
+
+/* Títulos y separadores */
+.header-404 {
+    color: #ff3333; /* Rojo para el error */
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.system-title {
+    color: #00ff00;
+    font-size: 1.5em;
+    border-bottom: 2px solid #00ff00;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+
+/* Estilos para los enlaces de navegación */
+.nav-link {
+    color: #00ff00;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+    color: #66ff66;
+}
+
+.info-text {
+    color: #cccccc; /* Gris claro para texto informativo */
+    margin-top: 20px;
+    font-size: 0.9em;
+}

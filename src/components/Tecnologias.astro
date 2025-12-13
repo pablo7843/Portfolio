@@ -1,105 +1,158 @@
 ---
-const technologies = [
-    { name: 'React', category: 'Frontend' },
-    { name: 'JavaScript', category: 'Frontend' },
-    { name: 'HTML5', category: 'Frontend' },
-    { name: 'CSS3', category: 'Frontend' },
-    { name: 'Angular', category: 'Frontend' },
-    { name: 'Java', category: 'Backend' },
-    { name: 'Spring', category: 'Backend' },
-    { name: 'Python', category: 'Backend' },
-    { name: 'Kotlin', category: 'Mobile' },
-    { name: 'MySQL', category: 'Database' },
-    { name: 'PHP', category: 'Backend' },
-    { name: 'Nodejs', category: 'Backend' },
-    { name: 'Git', category: 'Version Control' },
-    { name: 'GitHub', category: 'Version Control' },
-];
-
-const categories = [...new Set(technologies.map(t => t.category))];
+import Badge from "./Badge2.astro";
 ---
 
-<section class="technologies">
-    <h2>Tecnologies</h2>
-    <div class="tech-container">
-        {categories.map(category => (
-            <div class="category">
-                <h3>{category}</h3>
-                <div class="tech-list">
-                    {technologies
-                        .filter(tech => tech.category === category)
-                        .map(tech => (
-                            <span class="tech-badge">
-                                <img 
-                                    src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${tech.name.toLowerCase()}/${tech.name.toLowerCase()}-original.svg`}
-                                    alt={tech.name}
-                                    class="tech-icon"
-                                />
-                                {tech.name}
-                            </span>
-                        ))}
-                </div>
+<div class="tecnologias-container">
+    <h2 class="section-title">Tecnologías <span class="subtitle-sec">y Herramientas de Seguridad</span></h2>
+    
+    <div class="tech-grid">
+        
+        <div class="tech-group">
+            <h3>💻 Desarrollo Front-End & Mobile</h3>
+            <div class="badges-list">
+                <Badge tech="React">JavaScript</Badge>
+                <Badge tech="Angular">TypeScript</Badge>
+                <Badge tech="Kotlin">Mobile (DAM)</Badge>
+                <Badge tech="HTML5">Semantic & Secure</Badge>
+                <Badge tech="CSS3">Modern Styling</Badge>
             </div>
-        ))}
+        </div>
+
+        <div class="tech-group">
+            <h3>⚙️ Server-Side & Arquitectura</h3>
+            <div class="badges-list">
+                <Badge tech="Java">Spring Security 🛡️</Badge>
+                <Badge tech="Python">Automation</Badge>
+                <Badge tech="NodeJs">Express (APIs)</Badge>
+                <Badge tech="PHP">Legacy / CMS</Badge>
+            </div>
+        </div>
+        
+        <div class="tech-group">
+            <h3>💾 Data & Persistence</h3>
+            <div class="badges-list">
+                <Badge tech="MySQL">SQL Hardening</Badge>
+                <Badge tech="PostgreSQL">Advanced Security</Badge>
+                <Badge tech="MongoDB">NoSQL Secure</Badge>
+                <Badge tech="Git">Version Control</Badge>
+                <Badge tech="GitHub">Collaboration</Badge>
+            </div>
+        </div>
+        
+        <div class="tech-group">
+            <h3>🛠️ Infraestructura & DevSecOps</h3>
+            <div class="badges-list">
+                <Badge tech="Bash">Scripting</Badge>
+                <Badge tech="Docker">Container Security</Badge>
+                <Badge tech="Linux">OS Hardening</Badge>
+                <Badge Badge tech="Cloud">AWS/Azure Basics</Badge>
+            </div>
+        </div>
+        
+        <div class="tech-group full-width">
+            <h3>🚨 Auditoría & Pentesting Tools</h3>
+            <div class="badges-list">
+                <Badge tech="Burp Suite">Web Hacking</Badge>
+                <Badge tech="Wireshark">Network Analysis</Badge>
+                <Badge tech="Metasploit">Exploitation</Badge>
+                <Badge tech="Nmap">Scanning & Discovery</Badge>
+                <Badge tech="OWASP">Top 10 Knowledge</Badge>
+            </div>
+        </div>
+
     </div>
-</section>
+</div>
 
 <style>
-.technologies {
-    padding: 3rem 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: center;
-    margin-top: 100px;
-    margin-bottom: 200px
-}
+    /* VARIABLES (Asegúrate de definirlas en el CSS global si las usas) */
+    :root {
+        --primary-color: #00ff00; /* Verde neón */
+        --secondary-color: #66ccff; /* Azul neón */
+        --bg-dark-alt: #161625; /* Fondo oscuro ligeramente diferente */
+        --text-secondary: #cccccc;
+    }
 
-.technologies h2 {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-    color: var(--text-primary);
-}
+    .tecnologias-container {
+        max-width: 1200px;
+        margin: 60px auto;
+        padding: 0 20px;
+        color: var(--primary-color); /* Color por defecto del texto */
+    }
 
-.tech-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 3rem;
-    margin-top: 2rem;
-}
+    .section-title {
+        text-align: center;
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        margin-bottom: 50px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
 
-.category h3 {
-    margin-bottom: 1.5rem;
-    color: var(--text-secondary);
-    font-size: 1.5rem;
-}
+    .subtitle-sec {
+        display: block;
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        font-weight: 300;
+        margin-top: 5px;
+    }
 
-.tech-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-}
+    .tech-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px; 
+        justify-content: center;
+    }
 
-.tech-badge {
-    background: var(--bg-header);
-    color: var(--text-primary);
-    padding: 0.75rem 1.25rem;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    transition: all 0.3s ease;
-}
+    .tech-group {
+        background-color: var(--bg-dark-alt); 
+        border: 1px solid rgba(0, 255, 0, 0.1);
+        border-radius: 8px;
+        padding: 20px;
+        flex: 1 1 250px; 
+        min-width: 250px;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .tech-group:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0, 255, 0, 0.2);
+    }
 
-.tech-badge:hover {
-    background: var(--primary-color);
-    color: var(--bg-dark);
-    transform: translateY(-2px);
-}
+    .tech-group h3 {
+        color: var(--secondary-color); /* Azul para los títulos de grupo */
+        border-bottom: 2px solid rgba(102, 204, 255, 0.3);
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        font-size: 1.3rem;
+        text-align: center;
+    }
 
-.tech-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-}
+    /* Estilo para la sección de Seguridad destacada */
+    .full-width {
+        flex: 1 1 100%; 
+        border-color: var(--primary-color); 
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+        order: 10; 
+        margin-top: 20px;
+    }
+
+    .badges-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    /* Responsividad básica */
+    @media (max-width: 768px) {
+        .tech-grid {
+            flex-direction: column;
+            align-items: center;
+        }
+        .tech-group {
+            width: 90%;
+            min-width: auto;
+        }
+    }
 </style>
