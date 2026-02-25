@@ -1,87 +1,116 @@
 /* terminal.css */
 
-/* Define la fuente monospace para el efecto terminal */
 .terminal-font {
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-    color: #00ff00; /* Verde brillante */
-    background-color: #0d1a26; /* Fondo oscuro, casi negro */
+    color: #00ff00;
+    background-color: #0c0c1a;
     line-height: 1.6;
-    margin: 0;
-    padding: 20px;
-    border: 2px solid #00ff00; /* Borde verde */
-    box-shadow: 0 0 10px #00ff00;
 }
 
-/* Estilo para el contenedor principal de la terminal */
 .terminal-container {
-    width: 90%;
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 30px;
-    box-sizing: border-box;
+    width: 95%;
+    max-width: 900px;
+    margin: 40px auto;
+    position: relative;
+    background-color: #0c0c1a;
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.2);
+    overflow: hidden; /* Importante para que las scanlines no se salgan */
+    animation: terminalOpen 0.5s ease-out;
 }
 
-/* Estilo para las líneas de comando */
+@keyframes terminalOpen {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Efecto de monitor antiguo (Scanlines) */
+.terminal-container::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    z-index: 10;
+    background-size: 100% 4px, 3px 100%;
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+/* Barra superior de la ventana */
+.terminal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1a1a2e;
+    padding: 10px 15px;
+    border-bottom: 1px solid #00ff0044;
+    user-select: none;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+.red { background-color: #ff5f56; }
+.yellow { background-color: #ffbd2e; }
+.green { background-color: #27c93f; }
+
+.header-title {
+    font-size: 0.85em;
+    color: #00ff00;
+    opacity: 0.8;
+}
+
+/* Cuerpo de la terminal */
+.terminal-body {
+    padding: 20px;
+    height: 450px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #00ff00 #0c0c1a;
+}
+
 .prompt-line {
     display: flex;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-bottom: 5px;
 }
 
-/* Estilo para el prompt (usuario@sitio:~) */
-.prompt-user {
-    color: #66ccff; /* Azul para el usuario */
+.prompt-user { color: #66ccff; font-weight: bold; }
+.prompt-dir { color: #ffff66; }
+
+.input-line {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 5px;
 }
 
-/* Estilo para la ruta/directorio */
-.prompt-dir {
-    color: #ffff66; /* Amarillo suave para la ruta */
-}
-
-/* Cursor parpadeante */
-@keyframes blink {
-    50% { opacity: 0; }
-}
-
-.cursor {
-    display: inline-block;
-    width: 8px;
-    height: 1.2em;
-    background-color: #00ff00;
-    margin-left: 5px;
-    animation: blink 1s step-end infinite;
-}
-
-/* Títulos y separadores */
-.header-404 {
-    color: #ff3333; /* Rojo para el error */
-    font-size: 2.5em;
-    margin-bottom: 10px;
-}
-
-.system-title {
+#command-input {
+    flex-grow: 1;
+    background: none;
+    border: none;
     color: #00ff00;
-    font-size: 1.5em;
-    border-bottom: 2px solid #00ff00;
-    padding-bottom: 5px;
-    margin-bottom: 20px;
+    outline: none;
+    font-family: inherit;
+    font-size: 1em;
+    caret-color: #00ff00;
 }
 
-/* Estilos para los enlaces de navegación */
-.nav-link {
+.output-text {
+    margin: 5px 0 15px 15px;
     color: #00ff00;
-    text-decoration: none;
-    display: block;
-    margin-bottom: 5px;
+    white-space: pre-wrap;
 }
 
-.nav-link:hover {
-    text-decoration: underline;
-    color: #66ff66;
-}
-
-.info-text {
-    color: #cccccc; /* Gris claro para texto informativo */
-    margin-top: 20px;
-    font-size: 0.9em;
-}
+.error-text { color: #ff3333; }

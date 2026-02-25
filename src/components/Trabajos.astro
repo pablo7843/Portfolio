@@ -3,21 +3,21 @@ const trabajos = [
     {
         title: 'Star WikiWars',
         description: 'Star Wars Wiki for fans',
-        image: './src/assets/star-wars.webp',
+        image: '/star-wars.webp',
         technologies: ['Kotlin'],
         details: 'Aplicación nativa de Android que utiliza la arquitectura MVVM. Desarrollada en Kotlin, consume la API pública de Star Wars (SWAPI) para mostrar datos de personajes y naves, con una alta optimización para la experiencia móvil.'
     },
     {
         title: 'Qr-Shield',
         description: 'Secure QR code scanner',
-        image: './src/assets/banco.webp',
+        image: '/banco.webp',
         technologies: ['Flutter', 'Supabase'],
         details: 'Escaner de QR seguro para prevenir phishing. Escanea códigos QR y verifica URLs para decidir si el código QR es seguro, sospechoso o peligroso. El usuario puede iniciar sesión para activar el historial de escaneos y gestionarlos.'
     },
     {
         title: 'Music web reproducer',
         description: 'Reproducer online',
-        image: './src/assets/harmoniq.png',
+        image: '/harmoniq.png',
         technologies: ['React', 'Supabase'],
         details: 'Plataforma de streaming de música construida con React para el frontend y Supabase (backend como servicio) para la autenticación y almacenamiento. Focalizada en la gestión de sesiones seguras y reproducción optimizada.'
     }
@@ -25,8 +25,7 @@ const trabajos = [
 
 const getTechIcon = (tech: string) => {
     const name = tech.toLowerCase().replace(/\s+/g, '');
-    const iconName = name === 'kotlin' ? 'kotlin' : name; 
-    return `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${iconName}/${iconName}-original.svg`;
+    return `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${name}/${name}-original.svg`;
 };
 
 const getTechColor = (tech: string) => {
@@ -39,237 +38,162 @@ const getTechColor = (tech: string) => {
     return colors[tech.toLowerCase().replace(/\s+/g, '')] || '#cccccc';
 };
 ---
+
 <div class="trabajos-wrapper-outer">
-    <p class="titulo-trabajos"><h2>Projects</h2></p>
+    <h2 class="glitch-text">PROJECT_ARCHIVES</h2>
+    
     <div class="trabajos-container">
-        {trabajos.map(trabajo => (
-            <div class="trabajo-card">
-                <img id="imagen-trabajo" src={trabajo.image} alt={trabajo.title} style="height: 200px; width: 100%; object-fit: cover; object-position: bottom;" />
-                <h3>{trabajo.title}</h3>
-                <p class="descripcion">{trabajo.description}</p>
-                <div class="tecnologias">
-                    {trabajo.technologies.map(tech => (
-                        <span class="tech-badge" style={`background-color: ${getTechColor(tech)}`}>
-                            <img src={getTechIcon(tech)} alt={tech} class="tech-icon" />
-                            <span class="tech-name">{tech}</span>
-                        </span>
-                    ))}
-                </div>
-                
-                <details class="project-details">
-                    <summary class="saber-mas-btn">Saber más</summary>
-                    <div class="details-content">
-                        <p>{trabajo.details}</p>
-                        <div class="action-links">
-                            <a href="#" target="_blank">Ver Código 💻</a>
-                            <a href="#" target="_blank">Ver Demo 🚀</a>
+        {trabajos.map((trabajo, index) => (
+            <div class="flip-card" data-aos="fade-up">
+                <div class="flip-card-inner" id={`card-inner-${index}`}>
+                    
+                    <div class="flip-card-front">
+                        <div class="image-header">
+                            <img src={trabajo.image} alt={trabajo.title} class="imagen-trabajo" />
+                        </div>
+                        <div class="card-body">
+                            <h3>{trabajo.title}</h3>
+                            <p class="descripcion">{trabajo.description}</p>
+                            <div class="tecnologias">
+                                {trabajo.technologies.map(tech => (
+                                    <span class="tech-badge" style={`border: 1px solid ${getTechColor(tech)}; background: ${getTechColor(tech)}22`}>
+                                        <img src={getTechIcon(tech)} alt={tech} class="tech-icon" />
+                                        <span class="tech-name" style={`color: ${getTechColor(tech)}`}>{tech}</span>
+                                    </span>
+                                ))}
+                            </div>
+                            <button class="flip-btn" onclick={`document.getElementById('card-inner-${index}').classList.add('is-flipped')`}>
+                                ACCESS_DETAILS
+                            </button>
                         </div>
                     </div>
-                </details>
-            </div>
 
+                    <div class="flip-card-back">
+                        <div class="details-content">
+                            <h4 class="details-title">FILE_SPECIFICATIONS</h4>
+                            <p>{trabajo.details}</p>
+                            <div class="action-links">
+                                <a href="#" target="_blank">CODE_LINK 💻</a>
+                                <a href="#" target="_blank">LIVE_DEMO 🚀</a>
+                            </div>
+                            <button class="back-btn" onclick={`document.getElementById('card-inner-${index}').classList.remove('is-flipped')`}>
+                                GO_BACK
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         ))}
     </div>
-
-            <!-- Botón Saber más -->
-            <button class="saber-mas-btn">Saber más</button>
-            {/* https://harmoni-q-pablo7843s-projects.vercel.app/ */}
-        </div>
-    ))}
-
 </div>
 
 <style>
-    /* VARIABLES (Asegúrate de que tus variables CSS están definidas globalmente) */
-    :root {
-        --primary-color: #00ff00; 
-        --secondary-color: #66ccff;
-        --bg-dark-light: #161625; 
-        --text-primary: #fff; 
-        --text-secondary: #cccccc;
-    }
-
-    /* Estilos del desplegable */
-    .project-details {
-        margin: 1rem 1rem 1rem 1rem;
-        border-top: 1px solid rgba(102, 204, 255, 0.2);
-        padding-top: 1rem;
-    }
-    
-    .saber-mas-btn {
-        list-style: none;
-        display: block;
-        /* Estilos de botón existentes */
-        margin: 0 auto; 
-        padding: 0.5rem 1rem;
-        border: 2px solid var(--primary-color);
-        border-radius: 6px;
-        background-color: transparent;
-        color: var(--primary-color);
-        font-weight: 600;
-        font-size: large;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-        width: 30%; 
-    }
-    
-    .saber-mas-btn::-webkit-details-marker {
-        display: none;
-    }
-
-    .details-content {
-        margin-top: 1rem;
-        padding: 1rem;
-        border: 1px dashed var(--secondary-color);
-        border-radius: 4px;
-        background-color: rgba(10, 10, 30, 0.5);
-    }
-    
-    .details-content p {
-        color: var(--text-secondary);
-        font-size: 0.95rem;
-        line-height: 1.4;
-        margin-bottom: 1rem;
-    }
-
-    .action-links {
-        display: flex;
-        gap: 15px;
-        justify-content: center;
-    }
-
-    .action-links a {
-        color: var(--primary-color);
-        text-decoration: none;
-        font-weight: bold;
-        transition: color 0.2s;
-    }
-
-    .action-links a:hover {
-        color: var(--secondary-color);
-        text-decoration: underline;
-    }
-    
-    /* Fin de estilos del desplegable */
-
     .trabajos-wrapper-outer {
-        max-width: 1800px;
-        margin: 40px auto;
+        max-width: 1400px;
+        margin: 80px auto;
         padding: 0 20px;
+        font-family: 'Courier New', monospace;
     }
 
-    .saber-mas-btn:hover {
-        background-color: var(--primary-color);
-        color: var(--bg-dark);
-        transform: translateY(-2px);
-    }
-
-    html.light-mode .saber-mas-btn {
-        color: var(--primary-color);
-        border-color: var(--primary-color);
-    }
-
-    html.light-mode .saber-mas-btn:hover {
-        color: var(--bg-light-card);
-    }
-
-    h2 {
+    .glitch-text {
         font-size: 2.5rem;
-        margin-bottom: 2rem;
         text-align: center;
-        color: var(--primary-color); 
-        text-transform: uppercase;
+        margin-bottom: 3rem;
+        color: var(--primary-color);
+        letter-spacing: 5px;
     }
 
     .trabajos-container {
         display: grid;
         grid-template-columns: repeat(3, 1fr); 
-        gap: 2rem;
+        gap: 2.5rem;
+        perspective: 1000px; /* Necesario para el efecto 3D */
     }
 
-    @media (max-width: 1024px) {
-        .trabajos-container {
-            grid-template-columns: repeat(2, 1fr);
-        }
+    /* Estructura de la Carta */
+    .flip-card {
+        background-color: transparent;
+        height: 480px;
+        perspective: 1000px;
     }
 
-    @media (max-width: 640px) {
-        .trabajos-container {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .trabajo-card {
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        background-color: var(--bg-dark-light);
-        border: 1px solid rgba(102, 204, 255, 0.1); 
-    }
-
-    .trabajo-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 20px rgba(0, 255, 0, 0.3); 
-    }
-
-    .trabajo-card img {
+    .flip-card-inner {
+        position: relative;
         width: 100%;
-        height: 50px; 
-        object-fit: cover;
-        object-position: bottom;
+        height: 100%;
+        text-align: left;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-style: preserve-3d;
     }
 
-    .trabajo-card h3 {
-        padding: 1rem;
-        margin: 0;
-        font-size: 1.3rem;
-        color: var(--text-primary);
+    .is-flipped {
+        transform: rotateY(180deg);
     }
 
-    .descripcion {
-        padding: 0 1rem;
-        color: var(--text-secondary);
-        margin: 0.5rem 0 1rem 0;
-    }
-
-    .tecnologias {
-        padding: 0 1rem 1rem;
+    .flip-card-front, .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 255, 0, 0.2);
+        overflow: hidden;
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
+        flex-direction: column;
     }
 
-    .tech-badge {
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        transition: all 0.3s ease;
+    .flip-card-front {
+        background-color: var(--bg-dark-light);
     }
 
-    .tech-badge:hover {
-        transform: translateY(-2px);
-        opacity: 0.8;
+    .flip-card-back {
+        background-color: #0a0a0a;
+        color: white;
+        transform: rotateY(180deg);
+        border-color: var(--primary-color);
+        padding: 2rem;
+        justify-content: center;
     }
 
-    .tech-icon {
-        width: 18px;
-        height: 18px;
+    /* Estilos Front */
+    .image-header { height: 200px; overflow: hidden; }
+    .imagen-trabajo { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+    .card-body { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
+    .card-body h3 { color: #fff; margin-bottom: 0.5rem; }
+    .descripcion { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+    
+    .tecnologias { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .tech-badge { padding: 4px 12px; border-radius: 2px; display: flex; align-items: center; gap: 8px; font-size: 0.75rem; }
+    .tech-icon { width: 14px; height: 14px; }
+
+    /* Botones de Acción */
+    .flip-btn, .back-btn {
+        margin-top: auto;
+        padding: 10px;
+        border: 1px solid var(--primary-color);
+        background: transparent;
+        color: var(--primary-color);
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: bold;
+        transition: 0.3s;
     }
 
-    .tech-name {
-        color: #fff; 
-    }
+    .flip-btn:hover { background: var(--primary-color); color: #000; }
+    .back-btn { border-color: var(--secondary-color); color: var(--secondary-color); margin-top: 20px; }
+    .back-btn:hover { background: var(--secondary-color); color: #000; }
 
-    html.light-mode .tech-name {
-        color: #333; 
-    }
+    /* Estilos Back */
+    .details-title { color: var(--primary-color); margin-bottom: 1rem; border-bottom: 1px solid; width: fit-content; }
+    .details-content p { font-size: 0.9rem; line-height: 1.6; color: #ccc; }
+    .action-links { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+    .action-links a { color: var(--primary-color); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
+    .action-links a:hover { text-decoration: underline; }
 
-    html.light-mode .trabajo-card {
-        background-color: var(--bg-light-card);
-    }
+    /* MODO CLARO */
+    html.light-mode .flip-card-front { background: #fff; border-color: #ddd; }
+    html.light-mode .flip-card-front h3 { color: #222; }
+    html.light-mode .flip-card-back { background: #f4f4f4; color: #222; }
 </style>

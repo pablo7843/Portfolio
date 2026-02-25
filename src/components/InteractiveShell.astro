@@ -22,6 +22,8 @@
         font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
         background-color: #0c0c1a;
         color: #00ff00;
+        /* 🔥 AÑADIDO: Resplandor sutil al texto para efecto neón/CRT */
+        text-shadow: 0 0 5px rgba(0, 255, 0, 0.4); 
         border: 2px solid #00ff00;
         box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
         padding: 20px;
@@ -30,17 +32,19 @@
         max-width: 800px;
         height: 400px;
         overflow-y: auto;
-        /* 🔥 CAMBIO CLAVE 1: Permitir la selección de texto en todo el terminal */
         user-select: text; 
         cursor: text;
+        /* 🔥 AÑADIDO: Transición suave para el scroll */
+        scroll-behavior: smooth; 
     }
     h2 {
-        /* Deshabilitamos la selección del título */
         user-select: none;
     }
     .prompt-user {
         color: #66ccff; 
-        user-select: none; /* Deshabilitamos la selección del prefijo (opcional) */
+        user-select: none; 
+        /* 🔥 AÑADIDO: Resplandor al usuario */
+        text-shadow: 0 0 5px rgba(102, 204, 255, 0.4);
     }
     #prompt-user-line{
         color: #66ccff;
@@ -60,8 +64,9 @@
         caret-color: #00ff00;
         font-family: inherit;
         font-size: inherit;
-        /* Deshabilitamos user-select aquí para no interferir con el input */
         user-select: text; 
+        /* 🔥 AÑADIDO: Mismo resplandor para el input */
+        text-shadow: 0 0 5px rgba(0, 255, 0, 0.4);
     }
     #output-area p {
         margin: 0;
@@ -70,6 +75,10 @@
     #initial-message {
         color: #cccccc;
     }
+    
+    /* 🔥 AÑADIDO: Clases para dar color específico a las salidas */
+    .color-error { color: #ff3333; text-shadow: 0 0 5px rgba(255, 51, 51, 0.4); }
+    .color-info { color: #ffff66; text-shadow: 0 0 5px rgba(255, 255, 102, 0.4); }
 </style>
 
 <script>
@@ -87,6 +96,7 @@
         /** @type {string[]} */
         let history = [];
         let historyIndex = -1;
+        let isTyping = false; // 🔥 AÑADIDO: Control de estado para la animación de escritura
 
         const fileSystem = {
             "~": {
@@ -104,30 +114,20 @@
             currentDir: "~"
         };
         
-        // Lista de comandos disponibles para autocompletar
-        const availableCommands = ['help', 'ls', 'cd', 'cat', 'clear', 'scroll'];
+        // 🔥 AÑADIDO: Nuevos comandos a la lista de autocompletado
+        const availableCommands = ['help', 'ls', 'cd', 'cat', 'clear', 'scroll', 'whoami', 'date', 'sudo'];
 
-        /**
-         * Obtiene el contenido del directorio actual.
-         * @returns {Object} El objeto que representa el directorio actual.
-         */
         const getCurrentDirectoryContent = () => {
             return fileSystem.currentDir === "~"
                 ? fileSystem["~"]
                 : fileSystem["~"][fileSystem.currentDir];
         };
 
-        /**
-         * Lógica principal para obtener las coincidencias de autocompletado.
-         * @param {string} inputBuffer Lo que el usuario ha escrito actualmente.
-         * @returns {{ completion: string, matches: string[] }}
-         */
         const getCompletions = (inputBuffer) => {
             const parts = inputBuffer.trim().split(/\s+/);
             let currentWord = parts.length > 1 ? parts.at(-1) : parts[0];
             const command = parts[0];
 
-            // Caso 1: Autocompletar el comando (si está en la primera palabra)
             if (parts.length <= 1) {
                 const matches = availableCommands.filter(cmd => cmd.startsWith(currentWord));
                 if (matches.length === 1) {
@@ -136,12 +136,10 @@
                 return { completion: currentWord, matches: matches };
             }
 
-            // Caso 2: Autocompletar argumentos (archivos/directorios) para 'cd' y 'cat'
             if (command === 'cd' || command === 'cat') {
                 const currentContent = getCurrentDirectoryContent();
                 if (!currentContent) return { completion: currentWord, matches: [] };
                 
-                // Los directorios solo son válidos para 'cd'
                 const validTargets = Object.keys(currentContent).filter(name => {
                     const isDirectory = typeof currentContent[name] === 'object';
                     return command === 'cd' ? isDirectory : true; 
@@ -150,12 +148,10 @@
                 const matches = validTargets.filter(target => target.startsWith(currentWord));
 
                 if (matches.length === 1) {
-                    // Añadir espacio si es un comando completo, o barra si es un directorio.
                     let completion = matches[0];
                     if (command === 'cd' && typeof currentContent[completion] === 'object') {
-                        // Si el match único es un directorio y estamos haciendo cd, no añadimos espacio.
+                        // Nada
                     } else if (command === 'cat') {
-                        // Si es cat y es un archivo, añadimos espacio
                         completion += ' '; 
                     }
 
@@ -163,11 +159,9 @@
                     return { completion: completedBuffer, matches: [matches[0]] };
                 }
 
-                // Si hay múltiples coincidencias, mostramos la lista
                 return { completion: currentWord, matches: matches };
             }
             
-            // Si no es un comando que soporte autocompletado de argumentos
             return { completion: currentWord, matches: [] };
         };
 
@@ -188,14 +182,30 @@
                         - ls
                         - cd
                         - cat
-                        - clear`;
+                        - clear
+                        - whoami
+                        - date
+                        - sudo`;
+
+                // 🔥 AÑADIDO: Nuevos comandos para darle personalidad
+                case 'whoami':
+                    return { text: "guest\n(But we both know you are a recruiter looking for a great dev)", class: "color-info" };
+                
+                case 'date':
+                    return new Date().toString();
+
+                case 'sudo':
+                    return { text: "user is not in the sudoers file. This incident will be reported. 🚨", class: "color-error" };
 
                 case 'ls': {
                     const currentObj = getCurrentDirectoryContent();
                     if (typeof currentObj === "object") {
-                        return Object.keys(currentObj).join("    ");
+                        // 🔥 MEJORA: Añadir una marca visual para diferenciar carpetas de archivos
+                        return Object.keys(currentObj).map(key => {
+                            return typeof currentObj[key] === 'object' ? `[DIR] ${key}` : key;
+                        }).join("    ");
                     }
-                    return "Error: Cannot list contents of a file.";
+                    return { text: "Error: Cannot list contents of a file.", class: "color-error" };
                 }
 
                 case 'cd': {
@@ -214,12 +224,12 @@
                         return `Changed directory to ${target}`;
                     }
 
-                    return `Error: cd: ${target}: No such directory.`;
+                    return { text: `Error: cd: ${target}: No such directory.`, class: "color-error" };
                 }
 
                 case 'cat': {
                     const fileName = args[0];
-                    if (!fileName) return "Error: cat requires a file name.";
+                    if (!fileName) return { text: "Error: cat requires a file name.", class: "color-error" };
 
                     const currentObj = getCurrentDirectoryContent();
 
@@ -229,19 +239,41 @@
                         if (fileName.endsWith(".link")) {
                             return `Opening link: ${content}`;
                         }
-                        return content;
+                        // 🔥 MEJORA: Devolver un objeto especial para que appendOutput sepa que debe animarlo
+                        return { text: content, animate: true }; 
                     }
-                    return `Error: cat: ${fileName}: No such file.`;
+                    return { text: `Error: cat: ${fileName}: No such file.`, class: "color-error" };
                 }
 
                 case 'clear':
                     output.innerHTML = "";
                     return "Terminal cleared.";
 
-
                 default:
-                    return `Error: Command not found: ${cmd}`;
+                    return { text: `Error: Command not found: ${cmd}`, class: "color-error" };
             }
+        };
+
+        // 🔥 AÑADIDO: Función para simular el tecleo (efecto máquina de escribir)
+        const typeWriterEffect = (element, text, speed = 10) => {
+            isTyping = true;
+            input.disabled = true; // Deshabilita input mientras escribe
+            let i = 0;
+            element.textContent = "";
+            
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    output.scrollTop = output.scrollHeight;
+                    setTimeout(type, speed);
+                } else {
+                    isTyping = false;
+                    input.disabled = false;
+                    input.focus();
+                }
+            }
+            type();
         };
 
         const appendOutput = (command, result) => {
@@ -250,21 +282,39 @@
 
             const path = fileSystem.currentDir === "~" ? "~" : fileSystem.currentDir;
             
-            line.innerHTML =
-                `<span class="prompt-user">guest@pablo-sec:${path}$</span> ${command}`; 
-
+            line.innerHTML = `<span class="prompt-user">guest@pablo-sec:${path}$</span> ${command}`; 
             output.appendChild(line);
 
-            const res = document.createElement("p");
-            res.textContent = result; 
-            res.style.marginLeft = "10px";
+            // Manejar si el resultado es un string normal o un objeto con opciones (clases, animaciones)
+            let resultText = typeof result === 'string' ? result : result.text;
+            let resultClass = typeof result === 'object' && result.class ? result.class : "";
+            let shouldAnimate = typeof result === 'object' && result.animate;
 
-            output.appendChild(res);
+            if (resultText && command !== 'clear') {
+                const res = document.createElement("p");
+                if (resultClass) res.classList.add(resultClass);
+                res.style.marginLeft = "10px";
+                
+                output.appendChild(res);
+
+                // 🔥 AÑADIDO: Si requiere animación (ej. cat README.txt), llamamos al efecto
+                if (shouldAnimate) {
+                    typeWriterEffect(res, resultText);
+                } else {
+                    res.textContent = resultText;
+                }
+            }
 
             output.scrollTop = output.scrollHeight;
         };
 
         input.addEventListener('keydown', (e) => {
+            // Bloquear input si está en medio de una animación de tecleo
+            if (isTyping) {
+                e.preventDefault();
+                return;
+            }
+
             if (e.key === "Enter") {
                 e.preventDefault();
 
@@ -284,17 +334,14 @@
                 input.value = "";
             }
             
-            // IMPLEMENTACIÓN DE AUTOCOMPLETADO CON TAB
             if (e.key === "Tab") {
                 e.preventDefault();
                 const currentInput = input.value;
                 const { completion, matches } = getCompletions(currentInput);
 
                 if (matches.length === 1) {
-                    // Hay una única coincidencia, autocompletamos el comando
                     input.value = completion;
                 } else if (matches.length > 1) {
-                    // Hay múltiples coincidencias, mostramos las opciones en el output
                     appendOutput(currentInput, matches.join("    "));
                 }
             }
@@ -319,22 +366,13 @@
             }
         });
 
-        // 🔥 CAMBIO CLAVE 2: Modificar el event listener del clic.
-        // Solo enfocamos el input si el usuario no ha iniciado una selección.
         terminalWrapper.addEventListener("click", (e) => {
-             // Comprueba si el usuario ha seleccionado texto (propiedad global)
             const selection = window.getSelection();
-
-            // Si no hay texto seleccionado O si el texto seleccionado está vacío (es decir,
-            // el usuario solo ha hecho clic sin arrastrar), entonces enfocamos el input.
             if (!selection || selection.toString().length === 0) {
-                 input.focus();
+                 if(!isTyping) input.focus(); // Solo enfoca si no está escribiendo solo
             }
-            // Si hay texto seleccionado (length > 0), el navegador permite la selección, 
-            // y no robamos el foco al input.
         });
         
-        // Enfocar el input al cargar la página.
         input.focus();
     });
 </script>
