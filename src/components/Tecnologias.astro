@@ -96,7 +96,7 @@ const learningTechs = ["Python", "Flutter", "Dart", "Vue.js", "Rust"];
       </div>
     </div>
     <div class="learning-footer">
-      <span>BUFFERING: 75% COMPLETE</span>
+      <span class="scanning-text">BUFFERING: 75% COMPLETE</span>
       <span>SOURCE: SELF_TAUGHT_LEARNING</span>
     </div>
   </div>
@@ -140,7 +140,7 @@ const learningTechs = ["Python", "Flutter", "Dart", "Vue.js", "Rust"];
     100% { transform: scaleX(0); opacity: 0; } 
   }
 
-  /* ----- GRID PRINCIPAL (2x2 en PC) ----- */
+  /* ----- GRID PRINCIPAL ----- */
   .tech-grid { 
     display: grid; 
     grid-template-columns: 1fr 1fr; 
@@ -150,33 +150,34 @@ const learningTechs = ["Python", "Flutter", "Dart", "Vue.js", "Rust"];
 
   .tech-card {
     background: var(--bg-dark-light, rgba(12, 12, 26, 0.9));
-    border: 1px solid var(--primary-color);
+    /* CAMBIO: Borde sutil neutro en lugar de verde sólido */
+    border: 1px solid rgba(128, 130, 140, 0.2); 
     padding: 30px;
     position: relative;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
-  /* Ajuste visual para Modo Claro */
   :global(html.light-mode) .tech-card {
     background: var(--bg-light-card, #ffffff);
-    box-shadow: 4px 4px 0px var(--primary-color);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 4px 4px 0px rgba(128, 130, 140, 0.2);
   }
 
   .tech-card:hover { 
     transform: translateY(-5px) scale(1.01); 
-    box-shadow: 0 0 20px var(--primary-color); 
+    /* CAMBIO: El verde aparece mágicamente al hacer hover */
+    border-color: var(--primary-color);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.15); 
   }
 
   /* ----- EFECTO RADAR ----- */
   .card-radar {
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(from 0deg, var(--primary-color) 0deg, transparent 60deg);
-    opacity: 0.05;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    /* CAMBIO: Radar blanco/gris en lugar de verde para no tintar el fondo */
+    background: conic-gradient(from 0deg, rgba(255,255,255,0.08) 0deg, transparent 60deg);
     animation: radarRotate 6s infinite linear;
     pointer-events: none;
   }
@@ -189,12 +190,13 @@ const learningTechs = ["Python", "Flutter", "Dart", "Vue.js", "Rust"];
     align-items: center;
     gap: 15px;
     margin-bottom: 25px;
-    border-bottom: 1px solid var(--primary-color);
+    /* CAMBIO: Línea divisoria neutra */
+    border-bottom: 1px solid rgba(128, 130, 140, 0.2);
     padding-bottom: 15px;
   }
 
   .card-header h3 { 
-    font-size: 1.3rem; 
+    font-size: 1.2rem; 
     color: var(--text-primary); 
     margin: 0; 
   }
@@ -220,9 +222,9 @@ const learningTechs = ["Python", "Flutter", "Dart", "Vue.js", "Rust"];
     padding-left: 18px; 
   }
 
+  /* El punto verde se mantiene para dar el acento principal */
   .status-dot { 
-    width: 8px; 
-    height: 8px; 
+    width: 8px; height: 8px; 
     background: var(--primary-color); 
     border-radius: 50%; 
     box-shadow: 0 0 8px var(--primary-color); 
@@ -233,21 +235,38 @@ const learningTechs = ["Python", "Flutter", "Dart", "Vue.js", "Rust"];
     font-size: 0.7rem;
     display: flex;
     justify-content: space-between;
-    border-top: 1px dotted var(--primary-color);
+    /* CAMBIO: Línea punteada neutra */
+    border-top: 1px dotted rgba(128, 130, 140, 0.3);
     padding-top: 15px;
     color: var(--text-secondary);
   }
 
-  .status-ok { font-weight: bold; animation: blink 1.5s infinite; }
+  /* CAMBIO: Toque sutil de Cyan/Azul para romper la monotonía */
+  .scanning-text {
+    color: #00d4ff; 
+    opacity: 0.8;
+  }
+
+  .status-ok { 
+    color: var(--primary-color);
+    font-weight: bold; 
+    animation: blink 1.5s infinite; 
+  }
   @keyframes blink { 50% { opacity: 0.3; } }
 
   /* ----- SECCIÓN HORIZONTAL (LEARNING) ----- */
   .learning-section {
     background: var(--bg-dark-light);
-    border: 1px solid var(--primary-color);
+    /* CAMBIO: Borde neutro */
+    border: 1px solid rgba(128, 130, 140, 0.2);
     padding: 30px;
     position: relative;
     border-radius: 4px;
+    transition: border-color 0.3s ease;
+  }
+
+  .learning-section:hover {
+    border-color: var(--primary-color);
   }
 
   :global(html.light-mode) .learning-section {
@@ -275,23 +294,18 @@ const learningTechs = ["Python", "Flutter", "Dart", "Vue.js", "Rust"];
     100% { box-shadow: 0 0 0 10px transparent; opacity: 0; }
   }
 
-  /* ----- FIX BARRA DE CARGA ----- */
   .loader-container { 
-    width: 100%; 
-    height: 6px; 
-    background: rgba(128, 128, 128, 0.1); 
+    width: 100%; height: 4px; 
+    background: rgba(128, 130, 140, 0.2); 
     position: relative;
-    overflow: hidden; /* Evita que la barra se salga */
+    overflow: hidden; 
     border-radius: 10px;
   }
 
   .loader-bar { 
-    width: 100%; 
-    height: 100%; 
+    width: 100%; height: 100%; 
     background: var(--primary-color); 
-    position: absolute;
-    left: 0;
-    top: 0;
+    position: absolute; left: 0; top: 0;
     transform-origin: left;
     animation: loading-fixed 10s cubic-bezier(0.4, 0, 0.2, 1) infinite; 
   }
@@ -303,32 +317,26 @@ const learningTechs = ["Python", "Flutter", "Dart", "Vue.js", "Rust"];
   }
 
   .tech-ticker { 
-    display: flex; 
-    flex-wrap: wrap; 
-    justify-content: center; 
-    gap: 20px; 
-    padding: 20px 0; 
+    display: flex; flex-wrap: wrap; justify-content: center; 
+    gap: 20px; padding: 20px 0; 
   }
 
   .learning-item { 
-    font-size: 1.2rem; 
-    font-weight: bold; 
-    color: var(--text-primary); 
+    font-size: 1.2rem; font-weight: bold; color: var(--text-primary); 
   }
 
-  .code-bracket { color: var(--text-secondary); }
+  /* CAMBIO: Corchetes en Cyan para hacer contraste sutil */
+  .code-bracket { 
+    color: #00d4ff; 
+    font-weight: normal;
+  }
 
   .learning-footer {
-    margin-top: 20px;
-    font-size: 0.7rem;
-    display: flex;
-    justify-content: space-between;
-    color: var(--text-secondary);
-    border-top: 1px solid rgba(128, 128, 128, 0.2);
-    padding-top: 10px;
+    margin-top: 20px; font-size: 0.7rem; display: flex;
+    justify-content: space-between; color: var(--text-secondary);
+    border-top: 1px solid rgba(128, 130, 140, 0.2); padding-top: 10px;
   }
 
-  /* ----- RESPONSIVE ----- */
   @media (max-width: 900px) {
     .tech-grid { grid-template-columns: 1fr; }
     .glitch-text { font-size: 1.6rem; letter-spacing: 3px; }
